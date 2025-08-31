@@ -1,0 +1,24 @@
+module.exports = {
+    name: 'info',
+    description: 'Menampilkan informasi bot',
+    usage: '.info',
+    
+    async execute(waClient, message, MessageMedia) {
+        const chat = await message.getChat();
+        const media = MessageMedia.fromFilePath('../Thumbnail.png'); // Path to the image file
+        const infoMessage = `*GAG RT-S Bot Info*
+        
+        _Version MFWB 1620dp (Developer Preview)_
+
+        _Changes:_
+        - New Command for Admin
+        - Changes \`bot_authors\` to \`bot_info\` command and update the response
+        - From now, bot will be send the rare stock to the Whatsapp Channels not to group again. Group will be shutdown after this bot updates.
+
+        Created by: _@kucingpintar & @owlhouse22_
+
+        © Copyright Info GAG. All rights reserved.
+        This bot retrives data from vulcanvalues.com`;
+        await waClient.sendMessage(chat.id._serialized ,media, { caption: infoMessage });
+    }
+}
