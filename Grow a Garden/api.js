@@ -73,9 +73,9 @@ const app = express();
     }
   });
 
-
-UpdateData();
-setInterval(UpdateData, 13000);
+function runAPI() {
+  UpdateData();
+}
 
 module.exports = {
   UpdateData,
@@ -83,5 +83,6 @@ module.exports = {
   getSeedOutput: () => seedOutput,
   getEggOutput: () => eggOutput,
   getGearOutput: () => gearOutput,
+  runAPI,
   app
 };

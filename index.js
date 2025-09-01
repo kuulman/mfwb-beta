@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 const CommandHandler = require('./commandHandlers.js')
 const EventHandler = require('./eventHandlers.js')
-const { app: API_app } = require('./Grow a Garden/api.js')
+const { app: API_app, runAPI } = require('./Grow a Garden/api.js')
 const { SendNotif } = require('./Grow a Garden/gag_notif.js')
 
 const app = express()
@@ -83,7 +83,8 @@ waClient.on('ready', async () => {
   API_app.listen(3500, () => {
     console.log(`API is running on port 3500`);
   });
-  await SendNotif(waClient);
+  runAPI()
+  setInterval(() => SendNotif(waClient), 15000);
 });
 waClient.on('message', async message =>{ // Function for checking messages
     const messageBody = message.body.trim().toLowerCase(); // Make it to lowercase
