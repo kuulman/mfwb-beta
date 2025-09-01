@@ -75,6 +75,7 @@ const app = express();
 
 function runAPI() {
   UpdateData();
+
 }
 
 module.exports = {
