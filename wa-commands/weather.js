@@ -8,7 +8,7 @@
         const { city, getWeather } = require('.././api/weatherAPI.js');
         const location = message.body.slice(9).trim();
         city = location;
-        const weatherData = await getWeather(city);
+        let weatherData = await getWeather();
         await message.reply(weatherData);
         console.log('Success execute `.weather` commands, requested by ' + message.from);
     }

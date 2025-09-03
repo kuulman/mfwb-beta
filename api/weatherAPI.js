@@ -1,7 +1,7 @@
 const axios = require('axios');
 const express = require('express');
 const app = express();
-let city = 'Karawang';
+let city = '';
 
 async function getWeather(city) {
   try {
