@@ -1,28 +1,52 @@
 const axios = require('axios');
 const express = require('express');
+const { getWeatherOutput } = require('../Grow a Garden/api');
 const app = express();
-let city = '';
+let defaultCity = 'Jakarta'
+let weatherDataOutput;
 
 const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
-async function getWeather() {
+async function getWeather(city = null) {
   try {
-    const response = await axios.get('https://api.ryzumi.vip/api/search/weather?city=' + city);
+    let targetCity = city
+
+    if (!targetCity || targetCity.trim() == '') {
+      targetCity = defaultCity
+    }
+
+    console.log(`Fetching data for ${targetCity} city`)
+    const response = await axios.get(`https://api.ryzumi.vip/api/search/weather?city=${encodeURIComponent(targetCity)}`);
     const data = response.data;
     const cityOutput = data.name;
     const weather = capitalize(data.weather[0].description);
     const temp = data.main.temp;
     const humidity = data.main.humidity;
     const windSpeed = data.wind.speed;
-    console.log(`City: ${cityOutput}\nWeather: ${weather}\nTemperature: ${temp}°C\nHumidity: ${humidity}%\nWind Speed: ${windSpeed} m/s`);
+    const country = data.sys.country;
+    const loclon = data.coord.lon 
+    const loclat = data.coord.lat
+
+    console.log(`Location: ${cityOutput}\nWeather: ${weather}\nTemperature: ${temp}°C\nHumidity: ${humidity}%\nWind Speed: ${windSpeed} m/s\nCountry: ${country} \nLocation: ${loclat}, ${loclon}`);
+    weatherDataOutput = `Location: ${cityOutput}\nWeather: ${weather}\nTemperature: ${temp}°C\nHumidity: ${humidity}%\nWind Speed: ${windSpeed} m/s\nCountry: ${country} \nLocation: ${loclat}, ${loclon}`
   } catch (error) {
+    weatherDataOutput = '❌ Invalid Location Requested'
     console.error('Failed to fetch weather data: ' + error.message);
+  }
+}
+
+function setCity(newCity) {
+  if (newCity && newCity.trim() != '') {
+    defaultCity = newCity.trim()
+  } else {
+    console.error('Invalid city name provided to SetCity')
   }
 }
 
 app.get('/weatherapi', async (req, res) => {
   try {
-    const response = await axios.get('https://api.ryzumi.vip/api/search/weather?city=' + city);
+    const requestedCity  = req.query.city || defaultCity;
+    const response = await axios.get(`https://api.ryzumi.vip/api/search/weather?city=${encodeURIComponent(requestedCity)}`);
     res.json(response.data);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch data: ' + error.message });
@@ -35,6 +59,8 @@ app.listen(3500, () => {
 });
 
 module.exports = {
-    city,
+    setCity,
     getWeather,
+    defaultCity,
+    getWeatherOutput: () => weatherDataOutput
 };
