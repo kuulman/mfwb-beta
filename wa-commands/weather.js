@@ -4,7 +4,6 @@
     usage: '.weather [location]',
 
     async execute(waClient, message, MessageMedia, dcClient) {
-        // Try importing MessageMedia directly
         const { setCity, getWeather, getWeatherOutput } = require('.././api/weatherAPI.js');
         const location = message.body.slice(9).trim();
         if (!location) {

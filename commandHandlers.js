@@ -7,6 +7,7 @@ const commands = {
     egg_stock: require('./wa-commands/gag-commands/egg_stock.js'),
     gear_stock: require('./wa-commands/gag-commands/gear_stock.js'),
     weather: require('./wa-commands/weather.js'),
+    hp: require('./wa-commands/hideping.js'),
 };
 
 class CommandHandler {
