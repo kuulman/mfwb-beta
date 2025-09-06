@@ -1,6 +1,7 @@
 const axios = require('axios');
 const express = require('express');
 const { getWeatherOutput } = require('../Grow a Garden/api');
+const { error } = require('qrcode-terminal');
 const app = express();
 let defaultCity = 'Jakarta'
 let weatherDataOutput;
@@ -46,7 +47,11 @@ function setCity(newCity) {
 app.get('/weatherapi', async (req, res) => {
   try {
     const requestedCity  = req.query.city || defaultCity;
-    const response = await axios.get(`https://api.ryzumi.vip/api/search/weather?city=${encodeURIComponent(requestedCity)}`);
+    if (typeof requestedCity !== String || requestedCity.trim().length === 0) {
+      return res.status(400).json({error: 'Invalid Paramater'})
+    }
+    const encodedCity = encodeURIComponent(requestedCity)
+    const response = await axios.get(`https://api.ryzumi.vip/api/search/weather?city=${encodedCity}`);
     res.json(response.data);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch data: ' + error.message });
