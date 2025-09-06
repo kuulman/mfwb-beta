@@ -42,7 +42,7 @@ module.exports = {
 ${ramUsage} (All memory usage in server. Include from OS) 
 *CPU Usage:* ${cpuUsage}% (This bot CPU usage)`;
             await message.reply(server_usageMessage);
-            console.log(server_usageMessage)
+            console.log('Success execute `.server_usage` commands, requested by ' + message.from)
         } catch (error) {
             console.error('Error executing .server_usage command:', error);
             await message.reply('❌ Error executing .server_usage command');

@@ -25,7 +25,7 @@ Changes:
 © Copyright InfoGAG. All right reserved.`;
 
                 await waClient.sendMessage(chat.id._serialized, media, { caption: infoMessage });
-                console.log('Command .info executed successfully');
+                console.log('Success execute `.info` commands, requested by ' + message.from);
                 return;
             }
         } catch (directImportError) {

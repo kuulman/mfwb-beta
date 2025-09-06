@@ -83,8 +83,7 @@ waClient.on('ready', async () => {
   API_app.listen(3500, () => {
     console.log(`API is running on port 3500`);
   });
-  runAPI()
-  setInterval(() => SendNotif(waClient), 15000);
+  runAPI(setInterval(() => SendNotif(waClient), 15000))
 });
 waClient.on('message', async message =>{ // Function for checking messages
     const messageBody = message.body.trim().toLowerCase(); // Make it to lowercase
