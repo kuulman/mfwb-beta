@@ -13,6 +13,12 @@ module.exports = {
             text = replyMsg.body
         }
 
+        if (!chat.IsGroup) {
+            console.log('Access denied for', message.from)
+            message.reply("You only can use this command in group chat!")
+            return
+        }
+
         const participant = chat.participants
             .filter(p => p.id._serialized.endsWith('@c.us'))
             .map(p => ({
