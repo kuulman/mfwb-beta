@@ -4,16 +4,15 @@ module.exports = {
     usage: '.hp [location]',
 
     async execute(waClient, message, MessageMedia, dcClient) {
-        let messageID;
-        let text = message.body.slice(4).trim();
         const chat = await message.getChat();
         const contact = await message.getContact();
-        // Debug logs
-        console.log('message.from (group ID):', message.from);
-        console.log('message.author (sender ID):', message.author);
+        const replyMsg = await message.getQuotedMessage()
+        let text = message.body.slice(4).trim();
 
-        
-        // Get all participants with @c.us (individual users)
+        if (message.hasQuotedMsg) {
+            text = replyMsg.body
+        }
+
         const participant = chat.participants
             .filter(p => p.id._serialized.endsWith('@c.us'))
             .map(p => ({
@@ -24,11 +23,10 @@ module.exports = {
         
         const contactID = contact.id._serialized
 
-        // Try multiple ways to find sender
         let senderParticipant = (participant.find(p => p.id === contactID));
         
-        console.log('senderParticipant:', senderParticipant);
-        console.log('all participants:', participant.map(p => p.id));
+        console.log('senderParticipant:', senderParticipant); 
+        console.log('message.from (group ID):', message.from);
         
         // Fixed: Check senderParticipant instead of participant array
         if (!senderParticipant || (!senderParticipant.isAdmin && !senderParticipant.isSuperAdmin)) {
@@ -47,15 +45,16 @@ module.exports = {
         try {
             if (!text && !message.hasMedia) {
                 message.reply("Text cannot be null")
-                console.log('Null object requested by:' + senderParticipant)
+                console.log('Null object requested by:', senderParticipant)
+                return
             }
-            if (message.hasMedia) {
-                const media = await message.downloadMedia();
+            if (message.hasMedia || replyMsg.hasMedia) {
+                const media = await message.downloadMedia() || await replyMsg.downloadMedia();
                 await chat.sendMessage(media, { caption: text, mentions });
-                console.log('Success execute `.hp` command with media, requested by ' + message.from);
+                console.log('Success execute `.hp` command with media, requested by', senderParticipant);
             } else {
                 await chat.sendMessage(text, { mentions });
-                console.log('Success execute `.hp` command, requested by ' + message.from);
+                console.log('Success execute `.hp` command, requested by', senderParticipant);
             }
         } catch (error) {
             console.error('Error executing hp command:', error);

@@ -1,8 +1,6 @@
 const axios = require('axios');
 const express = require('express');
-const { getWeatherOutput } = require('../Grow a Garden/api');
-const { error } = require('qrcode-terminal');
-const app = express();
+const app = express()
 let defaultCity = 'Jakarta'
 let weatherDataOutput;
 
@@ -44,7 +42,7 @@ function setCity(newCity) {
   }
 }
 
-app.get('/weatherapi', async (req, res) => {
+app.get('/weather_api', async (req, res) => {
   try {
     const requestedCity  = req.query.city || defaultCity;
     if (typeof requestedCity !== String || requestedCity.trim().length === 0) {
@@ -58,8 +56,8 @@ app.get('/weatherapi', async (req, res) => {
   }
 });
 
-app.listen(3500, () => {
-  console.log(`weatherAPI is running on port 3500/weatherapi`);
+app.listen(3600, () => {
+  console.log(`weatherAPI is running on port 3600/weatherapi`);
   getWeather()
 });
 
