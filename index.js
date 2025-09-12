@@ -83,13 +83,11 @@ waClient.on('ready', async () => {
   API_app.listen(3500, () => {
     console.log(`API is running on port 3500`);
   });
-  setInterval(() =>{
-    runAPI()
-   SendNotif(waClient)
-  }, 15000)
+  await EventHandler.startAllEvents(waClient, MessageMedia);
 });
 waClient.on('message', async message =>{ // Function for checking messages
     const messageBody = message.body.trim().toLowerCase(); // Make it to lowercase
+    const getState = await waClient.getState()
     if (message.from.endsWith('@newsletter') || message.from.endsWith('@c.us') || message.from.endsWith('@g.us')) { // Check if the message is from a selected group
         const dcChannelID = '1406605639274332170';
         const dcChannel = dcClient.channels.cache.get(dcChannelID);
@@ -98,7 +96,10 @@ waClient.on('message', async message =>{ // Function for checking messages
         await dcChannel.send(msgLog); // Send that message to Discord Channel
     } 
     if (message.body.startsWith = ('.')) {
-        await CommandHandler.handleCommand(waClient, message);
+      await CommandHandler.handleCommand(waClient, message);
+    }
+    if (getState == 'CONNECTED') {
+      await EventHandler.handleEvent(waClient, message)
     }
 });
 
@@ -114,4 +115,3 @@ app.listen(PORT, () => console.log(`Vulcano 1.5 || Server is running on port ${P
 // It will ask you to scan the QR Code again.
 // If there is error `Cannot read properties of undefined (reading 'getChat')`, just restart the bot. 
 // Because this error is caused by the WA Client not ready yet when there is rare stock.
-

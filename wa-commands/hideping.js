@@ -13,6 +13,12 @@ module.exports = {
             text = replyMsg.body
         }
 
+        if (!chat.isGroup) {
+            console.log('Access denied for', message.from)
+            message.reply("You only can use this command in group chat!")
+            return
+        }
+
         const participant = chat.participants
             .filter(p => p.id._serialized.endsWith('@c.us'))
             .map(p => ({
@@ -48,7 +54,7 @@ module.exports = {
                 console.log('Null object requested by:', senderParticipant)
                 return
             }
-            if (message.hasMedia || replyMsg.hasMedia) {
+            if (message.hasMedia || (replyMsg && replyMsg.hasMedia)) {
                 const media = await message.downloadMedia() || await replyMsg.downloadMedia();
                 await chat.sendMessage(media, { caption: text, mentions });
                 console.log('Success execute `.hp` command with media, requested by', senderParticipant);
