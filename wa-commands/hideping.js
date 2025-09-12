@@ -13,7 +13,7 @@ module.exports = {
             text = replyMsg.body
         }
 
-        if (!chat.isGroup) {
+        if (!chat.IsGroup) {
             console.log('Access denied for', message.from)
             message.reply("You only can use this command in group chat!")
             return
