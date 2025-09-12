@@ -8,12 +8,14 @@ module.exports = {
         const contact = await message.getContact();
         const replyMsg = await message.getQuotedMessage()
         let text = message.body.slice(4).trim();
+        let mediaReply;
 
         if (message.hasQuotedMsg) {
-            text = replyMsg.body
+            mediaReply = await replyMsg.downloadMedia();
+            text = replyMsg.body 
         }
 
-        if (!chat.IsGroup) {
+        if (!chat.isGroup) {
             console.log('Access denied for', message.from)
             message.reply("You only can use this command in group chat!")
             return
@@ -49,17 +51,17 @@ module.exports = {
         }
 
         try {
-            if (!text && !message.hasMedia) {
+            if (!text && !message.hasMedia && !mediaReply) {
                 message.reply("Text cannot be null")
                 console.log('Null object requested by:', senderParticipant)
                 return
             }
             if (message.hasMedia || (replyMsg && replyMsg.hasMedia)) {
-                const media = await message.downloadMedia() || await replyMsg.downloadMedia();
-                await chat.sendMessage(media, { caption: text, mentions });
+                const media = await message.downloadMedia() || mediaReply
+                message.reply(media, undefined, { caption: text, mentions });
                 console.log('Success execute `.hp` command with media, requested by', senderParticipant);
             } else {
-                await chat.sendMessage(text, { mentions });
+                await message.reply(text, undefined, { mentions });
                 console.log('Success execute `.hp` command, requested by', senderParticipant);
             }
         } catch (error) {
