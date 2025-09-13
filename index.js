@@ -1,16 +1,12 @@
 require('dotenv').config();
 const express =  require('express')
 const qrcode = require('qrcode-terminal')
-const axios = require('axios')
 const { Client: discordClient, GatewayIntentBits, Collection, Events } = require('discord.js')
 const { LocalAuth, Client, MessageMedia } = require('whatsapp-web.js')
-const os = require('os');
 const fs = require('fs');
-const path = require('path');
 const CommandHandler = require('./commandHandlers.js')
 const EventHandler = require('./eventHandlers.js')
 const { app: API_app, runAPI } = require('./Grow a Garden/api.js')
-const { SendNotif } = require('./Grow a Garden/gag_notif.js')
 
 const app = express()
 const PORT = process.env.PORT || 3000;
