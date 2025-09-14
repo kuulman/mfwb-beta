@@ -100,7 +100,18 @@ waClient.on('message', async message =>{ // Function for checking messages
 waClient.initialize() // Execution code for WA Client
 dcClient.login(DISCORD_TOKEN);
 
-app.listen(PORT, () => console.log(`Vulcano 1.5 || Server is running on port ${PORT} \nPlease wait. This gonna take less/more than 1 minute`)); // Sent this to console if succesfully connected to node.js
+// Starter
+
+const logo = `
+ ███████╗██╗  ██╗███╗   ███╗████████╗
+ ██╔════╝██║ ██╔╝████╗ ████║╚══██╔══╝
+ ███████╗█████╔╝ ██╔████╔██║   ██║   
+ ╚════██║██╔═██╗ ██║╚██╔╝██║   ██║   
+ ███████║██║  ██╗██║ ╚═╝ ██║   ██║   
+ ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝   ╚═╝   `;
+
+app.listen(PORT, () => console.log(`
+  ${logo} \nSKMT 1.6 Developer Preview Bot || Running on PORT ${PORT} `)); // Sent this to console if succesfully connected to node.js
 
 
 
