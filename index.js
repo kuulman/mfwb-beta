@@ -87,7 +87,6 @@ waClient.on('message', async message =>{ // Function for checking messages
     if (message.from.endsWith('@newsletter') || message.from.endsWith('@c.us') || message.from.endsWith('@g.us')) { // Check if the message is from a selected group
         const msgLog = `${message.from} has sent you message: ${messageBody}`
         console.log(msgLog) // Write that message to 
-        await dcChannel.send(msgLog); // Send that message to Discord Channel
     } 
     if (message.body.startsWith = ('.')) {
       await CommandHandler.handleCommand(waClient, message);
