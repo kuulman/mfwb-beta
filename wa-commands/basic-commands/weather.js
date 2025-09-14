@@ -4,7 +4,7 @@
     usage: '.weather [location]',
 
     async execute(waClient, message, MessageMedia, dcClient) {
-        const { setCity, getWeather, getWeatherOutput } = require('.././api/weatherAPI.js');
+        const { setCity, getWeather, getWeatherOutput } = require('../../api/weatherAPI.js');
         const location = message.body.slice(9).trim();
         if (!location) {
             await message.reply("You need to fill the city name!")
