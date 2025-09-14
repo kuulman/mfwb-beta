@@ -1,6 +1,6 @@
-const index = require('./index.js')
+const index = require('../index.js')
 const events = {
-  gagapi: require('./Grow a Garden/gag_notif.js'),
+  gagapi: require('./basic-events-wa/gag_notif.js'),
 };
 
 

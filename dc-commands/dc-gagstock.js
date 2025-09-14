@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('discord.js');
-const {getEggOutput, getGearOutput, getSeedOutput} = require('../Grow a Garden/api.js');
+const {getEggOutput, getGearOutput, getSeedOutput} = require('../api/GAGapi.js');
 
 module.exports = {
   data: new SlashCommandBuilder()

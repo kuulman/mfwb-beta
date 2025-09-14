@@ -1,4 +1,4 @@
-const { UpdateData, getWeatherOutput, getEggOutput, getGearOutput, getSeedOutput, app: API_app, runAPI} = require('./api.js')
+const { UpdateData, getWeatherOutput, getEggOutput, getGearOutput, getSeedOutput, app: API_app, runAPI} = require('../../api/GAGapi.js')
 
 module.exports = {
 

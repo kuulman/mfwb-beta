@@ -4,9 +4,9 @@ const qrcode = require('qrcode-terminal')
 const { Client: discordClient, GatewayIntentBits, Collection, Events } = require('discord.js')
 const { LocalAuth, Client, MessageMedia } = require('whatsapp-web.js')
 const fs = require('fs');
-const CommandHandler = require('./commandHandlers.js')
-const EventHandler = require('./eventHandlers.js')
-const { app: API_app, runAPI } = require('./Grow a Garden/api.js')
+const CommandHandler = require('./wa-commands/commandHandlers.js')
+const EventHandler = require('./events/eventHandlers.js')
+const { app: API_app, runAPI } = require('./api/GAGapi.js')
 
 const app = express()
 const PORT = process.env.PORT || 3000;
@@ -85,8 +85,6 @@ waClient.on('message', async message =>{ // Function for checking messages
     const messageBody = message.body.trim().toLowerCase(); // Make it to lowercase
     const getState = await waClient.getState()
     if (message.from.endsWith('@newsletter') || message.from.endsWith('@c.us') || message.from.endsWith('@g.us')) { // Check if the message is from a selected group
-        const dcChannelID = '1406605639274332170';
-        const dcChannel = dcClient.channels.cache.get(dcChannelID);
         const msgLog = `${message.from} has sent you message: ${messageBody}`
         console.log(msgLog) // Write that message to 
         await dcChannel.send(msgLog); // Send that message to Discord Channel

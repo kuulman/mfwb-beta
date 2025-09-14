@@ -1,13 +1,11 @@
-const weather = require('./wa-commands/weather.js');
-
 const commands = {
-    info: require('./wa-commands/info.js'),
-    server_usage: require('./wa-commands/server_usage.js'),
-    seed_stock: require('./wa-commands/gag-commands/seed_stock.js'),
-    egg_stock: require('./wa-commands/gag-commands/egg_stock.js'),
-    gear_stock: require('./wa-commands/gag-commands/gear_stock.js'),
-    weather: require('./wa-commands/weather.js'),
-    hp: require('./wa-commands/hideping.js'),
+    info: require('./basic-commands/info.js'),
+    server_usage: require('./basic-commands/server_usage.js'),
+    seed_stock: require('./gag-commands/seed_stock.js'),
+    egg_stock: require('./gag-commands/egg_stock.js'),
+    gear_stock: require('./gag-commands/gear_stock.js'),
+    weather: require('./basic-commands/weather.js'),
+    hp: require('./group-commands/hideping.js'),
 };
 
 class CommandHandler {
