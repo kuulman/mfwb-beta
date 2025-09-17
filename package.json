@@ -19,6 +19,7 @@
     "express": "^5.1.0",
     "express-rate-limit": "^8.0.1",
     "mime-types": "^3.0.1",
+    "mongodb": "^6.19.0",
     "node-fetch": "^3.3.2",
     "pm2": "^6.0.8",
     "puppeteer": "^24.20.0",

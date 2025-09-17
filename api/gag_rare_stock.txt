@@ -1,0 +1,24 @@
+-- TIER 1 --
+Grape
+Mushroom
+Pepper
+Cacao
+Beanstalk
+Ember Lily
+Sugar Apple
+Burning Bud
+Elder Strawberry
+Romanesco
+-- TIER 2--
+Brussel Sprout
+Cocomango
+-- GEAR SHOP--
+Master Sprinkler
+Honey Sprinkler
+Level Up Lollipop
+Rainbow Lollipop
+Grandmaster Sprinkler
+-- EGGS SHOP --
+Bug Egg
+Exotic Bug Egg
+Mythical Bug Egg
