@@ -1,5 +1,6 @@
+require('dotenv').config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://skmt_dbadmin:skmt_dbadmin@skmtdb.wmmy5xj.mongodb.net/?retryWrites=true&w=majority&appName=skmtdb";
+const uri = process.env.DB_URI;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -10,18 +11,56 @@ const client = new MongoClient(uri, {
   }
 });
 
-(async () => {
+
+
+// USER MANAGEMENT SECTION
+let email;
+let pass;
+let number;
+
+function UserAccInput(userEmail, userPass, userNumber) {
+    email = userEmail;
+    pass = userPass;
+    number = userNumber;
+}
+
+async function createNewUser() {
     try {
+        let group_reg = null;
+        let defaultTypeAcc = "starter";
+        let active = true;
         await client.connect();
         const database = client.db('skmt');
-        const names = database.listCollections({}, { nameOnly: true });
-        let found = false;
-        for await (const doc of names) {
-            console.log(doc.name)
-        }
-    } catch (error) {
-        console.error("Error connecting to the database:", error);
+        const userdata = database.collection('userdata');
+        const result = await userdata.insertOne({ number: number, email: email, pass: pass, typeacc: defaultTypeAcc, group_reg: [ group_reg ], active: active });
+        console.log(`New user created with the following id: ${result.insertedId}`);
+        return result;
+    } catch (e) {
+        console.error(e);
     } finally {
         await client.close();
     }
-})();
+}
+
+async function checkUser() {
+    try {
+        let group_reg = null;
+        let defaultTypeAcc = "starter";
+        let active = true;
+        await client.connect();
+        const database = client.db('skmt');
+        const userdata = database.collection('userdata');
+        const result = await userdata.insertOne({ number: number, email: email, pass: pass, typeacc: defaultTypeAcc, group_reg: [ group_reg ], active: active });
+        console.log(`New user created with the following id: ${result.insertedId}`);
+        return result;
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+module.exports = { 
+    createNewUser, 
+    UserAccInput 
+};

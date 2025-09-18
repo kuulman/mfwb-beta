@@ -1,3 +1,6 @@
+const createUser = require('./basic-commands/createUser.js');
+const getchat = require('./dev-commands/getchat.js');
+
 const commands = {
     info: require('./basic-commands/info.js'),
     server_usage: require('./basic-commands/server_usage.js'),
@@ -6,6 +9,8 @@ const commands = {
     gear_stock: require('./gag-commands/gear_stock.js'),
     weather: require('./basic-commands/weather.js'),
     hp: require('./group-commands/hideping.js'),
+    cu: require('./basic-commands/createUser.js'),
+    getchat: require('./dev-commands/getchat.js'),
 };
 
 class CommandHandler {
