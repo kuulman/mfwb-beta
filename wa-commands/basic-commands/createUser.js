@@ -4,7 +4,7 @@
     usage: '.cu [email] [password]',
 
     async execute(waClient, message, MessageMedia, dcClient) {
-        const { createNewUser, UserAccInput } = require('../../database');
+        const { createNewUser, UserAccInput, checkUser } = require('../../database');
         const chat = await message.getChat();
         const fulltext = message.body.slice(3).trim();
         const args = fulltext.split(' ');
@@ -20,9 +20,14 @@
             await message.reply('This command can only be used in private chat.');
             return;
         }
-
         UserAccInput(Uemail, Upass, Unum);
-        await createNewUser(Uemail, Upass, Unum);
-        await message.reply(`User created successfully!\n\nEmail: ${Uemail}`);
+        const result = checkUser(Unum)
+        if (!result) {
+            await createNewUser(Uemail, Upass, Unum);
+            await message.reply(`User created successfully!\n\nEmail: ${Uemail}`);
+        } else {
+            await message.reply('User already exists with this number.');
+            return;
+        }
     },
 } 

@@ -32,7 +32,7 @@ async function createNewUser() {
         await client.connect();
         const database = client.db('skmt');
         const userdata = database.collection('userdata');
-        const result = await userdata.insertOne({ number: number, email: email, pass: pass, typeacc: defaultTypeAcc, group_reg: [ group_reg ], active: active });
+        const result = await userdata.insertOne({ number: number, email: email, pass: pass, type_acc: defaultTypeAcc, group_reg: [ group_reg ], active: active });
         console.log(`New user created with the following id: ${result.insertedId}`);
         return result;
     } catch (e) {
@@ -44,14 +44,13 @@ async function createNewUser() {
 
 async function checkUser() {
     try {
-        let group_reg = null;
-        let defaultTypeAcc = "starter";
+        number = "6282135368037@c.us";
         let active = true;
         await client.connect();
         const database = client.db('skmt');
         const userdata = database.collection('userdata');
-        const result = await userdata.insertOne({ number: number, email: email, pass: pass, typeacc: defaultTypeAcc, group_reg: [ group_reg ], active: active });
-        console.log(`New user created with the following id: ${result.insertedId}`);
+        const result = await userdata.find({ number: number, active: active }).toArray();
+        console.log(`Email: `, result[0]['email'], ` Pass: `, result[0]['type_acc']);
         return result;
     } catch (e) {
         console.error(e);
@@ -62,5 +61,6 @@ async function checkUser() {
 
 module.exports = { 
     createNewUser, 
-    UserAccInput 
+    UserAccInput,
+    checkUser
 };
