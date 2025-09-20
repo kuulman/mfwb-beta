@@ -1,3 +1,5 @@
+const { get } = require('pm2');
+
  module.exports = {
     name: 'createUser',
     description: 'Create a user profile in the database',
@@ -13,7 +15,7 @@
         let Unum = message.from
 
         if (!Uemail || !Upass) {
-            await message.reply('Please provide both email and password. ex: .cu admin admin#1234 (Dont use this for your account)');
+            await message.reply('Please provide both email and password. Example: `.cu user user1234`');
             return;
         }
         if (chat.isGroup) {
@@ -21,12 +23,12 @@
             return;
         }
         UserAccInput(Uemail, Upass, Unum);
-        const result = checkUser(Unum)
+        const result = await checkUser(Unum);
         if (!result) {
             await createNewUser(Uemail, Upass, Unum);
             await message.reply(`User created successfully!\n\nEmail: ${Uemail}`);
         } else {
-            await message.reply('User already exists with this number.');
+            await message.reply('Cannot create user, number already registered. Registered Email: ' + result[0]['email']);
             return;
         }
     },

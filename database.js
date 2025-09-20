@@ -17,6 +17,7 @@ const client = new MongoClient(uri, {
 let email;
 let pass;
 let number;
+let dataResult = {};
 
 function UserAccInput(userEmail, userPass, userNumber) {
     email = userEmail;
@@ -44,14 +45,13 @@ async function createNewUser() {
 
 async function checkUser() {
     try {
-        number = "6282135368037@c.us";
         let active = true;
         await client.connect();
         const database = client.db('skmt');
         const userdata = database.collection('userdata');
         const result = await userdata.find({ number: number, active: active }).toArray();
-        console.log(`Email: `, result[0]['email'], ` Pass: `, result[0]['type_acc']);
-        return result;
+        console.log('[Database] Account Database Result:', result);
+        return result
     } catch (e) {
         console.error(e);
     } finally {
@@ -62,5 +62,6 @@ async function checkUser() {
 module.exports = { 
     createNewUser, 
     UserAccInput,
-    checkUser
+    checkUser,
+    resultData: () => dataResult
 };

@@ -1,12 +1,12 @@
 module.exports = {
-    name: 'egg_stock',
-    description: 'Menampilkan egg stock',
-    usage: '.egg_stock',
-    
+    name: 'seed_stock',
+    description: 'Menampilkan seed stock',
+    usage: '.seed_stock',
+
     async execute(waClient, message, MessageMedia, dcClient) {
-        const { getEggOutput } = require('../../Grow a Garden/api.js')
+        const { getSeedOutput } = require('../../api/GAGapi.js')
         const axios = require("axios")
-        await message.reply(getEggOutput())
-        console.log('Success execute `.egg_stock` commands, requested by ' + message.from);
+        await message.reply(getSeedOutput())
+        console.log('Success execute `.seed_stock` commands, requested by ' + message.from);
     }
 } 

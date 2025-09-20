@@ -4,7 +4,7 @@ module.exports = {
     usage: '.egg_stock',
     
     async execute(waClient, message, MessageMedia, dcClient) {
-        const { getEggOutput } = require('../../Grow a Garden/api.js')
+        const { getEggOutput } = require('../../api/GAGapi.js')
         const axios = require("axios")
         await message.reply(getEggOutput())
         console.log('Success execute `.egg_stock` commands, requested by ' + message.from);
