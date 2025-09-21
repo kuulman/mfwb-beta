@@ -11,6 +11,7 @@ const commands = {
     hp: require('./group-commands/hideping.js'),
     cu: require('./basic-commands/createUser.js'),
     getchat: require('./dev-commands/getchat.js'),
+    profile: require('./basic-commands/profile.js'),
 };
 
 class CommandHandler {

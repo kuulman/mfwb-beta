@@ -29,7 +29,7 @@ function UserAccInput(userEmail, userPass, userNumber) {
 async function createNewUser() {
     try {
         let group_reg = null;
-        let defaultTypeAcc = "starter";
+        let defaultTypeAcc = "Starter";
         let active = true;
         await client.connect();
         const database = client.db('skmt');
@@ -64,5 +64,4 @@ module.exports = {
     createNewUser, 
     UserAccInput,
     checkUser,
-    resultData: () => dataResult
 };
