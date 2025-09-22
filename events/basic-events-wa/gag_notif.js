@@ -10,12 +10,6 @@ module.exports = {
         
         async function SendNotif() {
             try {
-                // Weather
-                if (lastWeather !== getWeatherOutput()) {
-                    lastWeather = getWeatherOutput();
-                    console.log('Weather Updated Successfully');
-                    await waClient.sendMessage('120363401271520921@g.us', lastWeather);
-                } 
                 // Seed and Gear
                 if (lastSeed !== getSeedOutput() && lastGear !== getGearOutput()) {
                     lastSeed = getSeedOutput();
