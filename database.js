@@ -1,4 +1,5 @@
 require('dotenv').config();
+import bcrypt from 'bcryptjs';
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = process.env.DB_URI;
 
@@ -13,6 +14,20 @@ const client = new MongoClient(uri, {
 });
 
 
+
+// EVENT MANAGEMENT SECTION
+async function loginUser() {
+    try {
+        await client.connect();
+        const database = client.db('skmt');
+        const userdata = database.collection('event');
+        const time = new Date();
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
 
 // USER MANAGEMENT SECTION
 let email;
@@ -34,6 +49,7 @@ async function createNewUser() {
         await client.connect();
         const database = client.db('skmt');
         const userdata = database.collection('userdata');
+        pass = await bcrypt.hash(pass, 8);
         const result = await userdata.insertOne({ number: number, email: email, pass: pass, type_acc: defaultTypeAcc, group_reg: [ group_reg ], active: active });
         console.log(`New user created with the following id: ${result.insertedId}`);
         return result;
@@ -60,8 +76,29 @@ async function checkUser() {
     }
 }
 
+async function loginUser() {
+    try {
+        await client.connect();
+        const database = client.db('skmt');
+        const userdata = database.collection('userdata');
+        const Findresult = await userdata.findOne({ email: email }).toArray();
+        const hashedpass = Findresult[0]['pass'];
+        const match = await bcrypt.compare(pass, hashedpass);
+        if (match) {
+            return console.log('[Database] Login Success:', Findresult);
+        } else {
+            return console.log('[Database] Login Failed: Incorrect password');
+        }
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
 module.exports = { 
     createNewUser, 
     UserAccInput,
     checkUser,
+    loginUser,
 };
