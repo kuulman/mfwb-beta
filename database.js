@@ -16,12 +16,12 @@ const client = new MongoClient(uri, {
 
 
 // EVENT MANAGEMENT SECTION
-async function loginUser() {
+async function loginUser(timestamp) {
     try {
         await client.connect();
         const database = client.db('skmt');
         const userdata = database.collection('event');
-        const time = new Date();
+        const result = await userdata.find({ timestamp: timestamp }).toArray();
     } catch (e) {
         console.error(e);
     } finally {
@@ -33,7 +33,6 @@ async function loginUser() {
 let email;
 let pass;
 let number;
-let dataResult = {};
 
 function UserAccInput(userEmail, userPass, userNumber) {
     email = userEmail;
