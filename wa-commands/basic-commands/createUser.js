@@ -10,6 +10,7 @@ const { get } = require('pm2');
         const chat = await message.getChat();
         const fulltext = message.body.slice(3).trim();
         const args = fulltext.split(' ');
+        const dangerousChars = /[\x00-\x1F\x7F-\x9F\\"'`<>&|;$]/;
         let Uemail = args[0];
         let Upass = args.slice(1).join(' ');
         let Unum = message.from
@@ -22,9 +23,17 @@ const { get } = require('pm2');
             await message.reply('This command can only be used in private chat.');
             return;
         }
+        if (Uemail.length < 5 || !Uemail.includes('@') || !Uemail.includes('.')) {
+            await message.reply('Please provide a valid email address.');
+            return;
+        }
+        if (Upass.length < 6 || Upass.length > 20 || dangerousChars.test(Upass)) {
+            await message.reply('Password must be 6-20 characters long and cannot contain special characters.');
+            return;
+        }
         UserAccInput(Uemail, Upass, Unum);
         const result = await checkUser(Unum);
-        if (!result) {
+        if (!result || result.length === 0) {
             await createNewUser(Uemail, Upass, Unum);
             await message.reply(`User created successfully!\n\nEmail: ${Uemail}`);
         } else {

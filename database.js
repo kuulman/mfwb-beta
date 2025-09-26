@@ -1,5 +1,5 @@
 require('dotenv').config();
-import bcrypt from 'bcryptjs';
+const bcrypt = require('bcryptjs');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = process.env.DB_URI;
 
@@ -16,12 +16,14 @@ const client = new MongoClient(uri, {
 
 
 // EVENT MANAGEMENT SECTION
-async function loginUser(timestamp) {
+async function DailyEvent(timestamp) {
     try {
         await client.connect();
         const database = client.db('skmt');
         const userdata = database.collection('event');
         const result = await userdata.find({ timestamp: timestamp }).toArray();
+        console.log('[Database] Event Database Result:', result);
+        return result;
     } catch (e) {
         console.error(e);
     } finally {
@@ -100,4 +102,5 @@ module.exports = {
     UserAccInput,
     checkUser,
     loginUser,
+    DailyEvent,
 };
