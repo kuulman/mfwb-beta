@@ -21,7 +21,7 @@ async function DailyEvent(timestamp) {
         await client.connect();
         const database = client.db('skmt');
         const userdata = database.collection('event');
-        const result = await userdata.find({ timestamp: timestamp }).toArray();
+        const result = await userdata.find({ time: timestamp }).toArray();
         console.log('[Database] Event Database Result:', result);
         return result;
     } catch (e) {

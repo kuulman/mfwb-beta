@@ -1,19 +1,26 @@
+const { format } = require('sharp');
 const { DailyEvent } = require('../../database.js');
 
 module.exports = {
     async execute(waClient, MessageMedia, message) {
 
-    
-        const now = Date.now();
-        const ISODate = new Date(now).toISOString();
-        const events = await DailyEvent(ISODate);
+        // SKMT Date Format
+        const now = new Date();
+        const hour = now.getUTCHours().toString().padStart(2, '0');
+        const minute = now.getUTCMinutes().toString().padStart(2, '0');
+        const date = now.getUTCDate().toString().padStart(2, '0');
+        const month = (now.getUTCMonth() + 1).toString().padStart(2, '0');
+        const year = now.getUTCFullYear();
+        const FormatDate = `${date}/${month}/${year}T${hour}:${minute}`;
+        console.log('Formatted Date:', FormatDate + ` UTC`);
+
+        const events = await DailyEvent(FormatDate);
 
         if (!events || events.length === 0) {
-            console.log('No scheduled events found.');
+            console.log('[Schedule Handler] No scheduled events found.');
             return;
         }
 
-        console.log('Scheduled Events:', events);
     }
 }
 // const fs = require('fs') // File system module
