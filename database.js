@@ -31,6 +31,20 @@ async function DailyEvent(timestamp) {
     }
 }
 
+async function editTimestamp(id, timestamp) {
+    try {
+            await client.connect();
+            const database = client.db('skmt');
+            const userdata = database.collection('event');
+            const result = await userdata.updateMany({ _id: id }, { $set: { time: timestamp }})
+            return result;
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
 // USER MANAGEMENT SECTION
 let email;
 let pass;
@@ -103,4 +117,5 @@ module.exports = {
     checkUser,
     loginUser,
     DailyEvent,
+    editTimestamp
 };
