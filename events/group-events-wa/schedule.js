@@ -21,6 +21,23 @@ module.exports = {
             return;
         }
 
+        function japelParse() {
+            const tommorow =  (now.getDay() +1) % 7; // Get current day (0-6)
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+            const tommorowName = days[tommorow] // Convert number to name (e.g. 1 => "Monday")
+
+            try {
+                let data =  events
+                data = JSON.parse(data)
+            } catch (err) {
+                console.log(`[Event Handler] Error: ` + err)
+                return
+            }
+            const schedule = data.japel[tommorowName]
+
+            const japelKey = Object.keys(schedule).find(k => k.includes('Japel'))
+            return `📅 Hari: ${tommorowName}\n📚 Jadwal Pelajaran:\n${schedule[japelKey]}`
+        }    
     }
 }
 // const fs = require('fs') // File system module
