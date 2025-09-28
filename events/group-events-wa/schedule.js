@@ -16,7 +16,7 @@ module.exports = {
 
         async function japelParse() {
             const FormatDate = SKMTFormatDate();
-            console.log(FormatDate)
+            const now = new Date()
             let date = now.getUTCDate().toString().padStart(2, '0');
             const events = await DailyEvent(FormatDate);
             if (!events || events.length === 0) {
