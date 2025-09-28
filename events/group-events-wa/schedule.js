@@ -4,20 +4,15 @@ module.exports = {
     async execute(waClient, MessageMedia, message) {
 
         // SKMT Date Format
-        function SKMTFormatDate() {
             const now = new Date();
             const hour = now.getUTCHours().toString().padStart(2, '0');
             const minute = now.getUTCMinutes().toString().padStart(2, '0');
             const date = now.getUTCDate().toString().padStart(2, '0');
             const month = (now.getUTCMonth() + 1).toString().padStart(2, '0');
             const year = now.getUTCFullYear();
-            return `${date}/${month}/${year}T${hour}:${minute}`;
-        }
+            const FormatDate =  `${date}/${month}/${year}T${hour}:${minute}`;
 
         async function japelParse() {
-            const FormatDate = SKMTFormatDate();
-            const now = new Date()
-            let date = now.getUTCDate().toString().padStart(2, '0');
             const events = await DailyEvent(FormatDate);
             if (!events || events.length === 0) {
                 console.log('[Schedule Handler] No scheduled events found.');
