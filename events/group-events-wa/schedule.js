@@ -3,7 +3,7 @@ const { DailyEvent, editTimestamp, checkUser } = require('../../database.js');
 module.exports = {
     async execute(waClient, MessageMedia, message) {
         
-        async function CheckEvent() {
+        function getDateBySKMTFormat() {
             // SKMT Date Format
             const now = new Date();
             const hour = now.getUTCHours().toString().padStart(2, '0');
@@ -11,12 +11,27 @@ module.exports = {
             const date = now.getUTCDate().toString().padStart(2, '0');
             const month = (now.getUTCMonth() + 1).toString().padStart(2, '0');
             const year = now.getUTCFullYear();
-            let FormatDate =  `${date}/${month}/${year}T${hour}:${minute}`;
-            
-            const events = await DailyEvent(FormatDate);
+            return  `${date}/${month}/${year}T${hour}:${minute}`;
+        }
+
+        function getTommorowDate() {
+            // SKMT Date Format
+            const now = new Date();
+            now.setUTCDate(now.getUTCDate() + 1);
+            const hour = now.getUTCHours().toString().padStart(2, '0');
+            const minute = now.getUTCMinutes().toString().padStart(2, '0');
+            const date = now.getUTCDate().toString().padStart(2, '0');
+            const month = (now.getUTCMonth() + 1).toString().padStart(2, '0');
+            const year = now.getUTCFullYear();
+            return  `${date}/${month}/${year}T${hour}:${minute}`;
+        }
+        
+        async function CheckEvent() {
+            const SKMTFormatDate = getDateBySKMTFormat()
+            const events = await DailyEvent(SKMTFormatDate);
             if (!events || events.length === 0) {
                 console.log('[Schedule Handler] No scheduled events found.');
-                console.log(FormatDate)
+                console.log(SKMTFormatDate)
                 return null;
             }  
             let readableEvents = events[0]
@@ -46,9 +61,8 @@ module.exports = {
             
                             await waClient.sendMessage(eventData.group_reg, response);
 
-                            now.setUTCDate(now.getUTCDate() + 1);
-                            await editTimestamp(id, FormatDate);
-                            now.setUTCDate(now.getUTCDate() - 1)
+                            const tommorowDate = getTommorowDate()
+                            await editTimestamp(id, tommorowDate);
                             console.log(`[Schedule Handler] ${id} schedule sent to group: ${eventData.group_reg}`);
                         } catch (err) {
                             console.log(`[Event Handler] Error: ` + err)
@@ -66,9 +80,8 @@ module.exports = {
             
                             await waClient.sendMessage(eventData.group_reg, response);
 
-                            now.setUTCDate(now.getUTCDate() + 1);
-                            await editTimestamp(id, FormatDate);
-                            now.setUTCDate(now.getUTCDate() - 1)
+                            const tommorowDate = getTommorowDate()
+                            await editTimestamp(id, tommorowDate);
                             console.log(`[Schedule Handler] ${id} schedule sent to group: ${eventData.group_reg}`);
                         } catch (err) {
                             console.log(`[Event Handler] Error: ` + err)
