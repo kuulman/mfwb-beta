@@ -36,7 +36,8 @@ module.exports = {
             }  
             let readableEvents = events[0]
             if (readableEvents.type == "Daily Schedule") {
-                    const tommorow =  (now.getDay() +1) % 7; // Get current day (0-6)
+                    const now = new Date()
+                    const tommorow =  (now.getUTCDay() +1) % 7; // Get current day (0-6)
                     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
                     const tommorowName = days[tommorow] // Convert number to name (e.g. 1 => "Monday")
         
@@ -55,7 +56,7 @@ module.exports = {
                             if (!japel || japel.length === 0) {
                                 return
                             }
-            
+        
                             console.log(`📅 Days: ${tommorowName}\n📚 Schedule:\n${japel}`)
                             response = `${header} 📅 Schedule for: *${tommorowName}*\n${japel}${footer}`
             
@@ -69,29 +70,26 @@ module.exports = {
                             return
                         }
                     }
+
+                }
             if (readableEvents.type == 'Plain Schedule') {
-                const tommorow =  (now.getDay() +1) % 7; // Get current day (0-6)
-                    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-                    const tommorowName = days[tommorow] // Convert number to name (e.g. 1 => "Monday")
-        
                     for (const eventData of events) {
                         try {
                             let response = eventData.contents;
-            
+                            let id = eventData._id;
                             await waClient.sendMessage(eventData.group_reg, response);
-
                             const tommorowDate = getTommorowDate()
                             await editTimestamp(id, tommorowDate);
                             console.log(`[Schedule Handler] ${id} schedule sent to group: ${eventData.group_reg}`);
                         } catch (err) {
                             console.log(`[Event Handler] Error: ` + err)
                             return
-                        }
-            }   }   
+                        }      
             }
         }
-        
+    }
         await CheckEvent()
-        setInterval( async () => { CheckEvent() }, 60000);
+        setInterval( async () => { CheckEvent() }, 60000)
+        console.log('[Schedule Handler] Schedule handler is running...');
     }
 }
