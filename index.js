@@ -28,9 +28,6 @@ for (const file of commandFiles) {
   dcClient.commands.set(dcCommandHandler.data.name, dcCommandHandler);
 }
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN; // Check .env or make new if you are clone this repo
-const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID; // Check .env or make new if you are clone this repo
-const WA_GROUP_ID = process.env.WA_GROUP_ID;
-const WA_CHANNELS_JID = process.env.WA_CHANNELS_JID;
 
 dcClient.on('clientReady', () => {
     console.log(`Discord bot is ready`); // Write that to console if the DC Client is ready
