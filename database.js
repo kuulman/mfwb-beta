@@ -5,12 +5,12 @@ const uri = process.env.DB_URI;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-    tls: true,
-  }
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+        tls: true,
+    }
 });
 
 
@@ -33,11 +33,11 @@ async function DailyEvent(timestamp) {
 
 async function editTimestamp(id, timestamp) {
     try {
-            await client.connect();
-            const database = client.db('skmt');
-            const userdata = database.collection('event');
-            const result = await userdata.updateMany({ _id: id }, { $set: { time: timestamp }})
-            return result;
+        await client.connect();
+        const database = client.db('skmt');
+        const userdata = database.collection('event');
+        const result = await userdata.updateMany({ _id: id }, { $set: { time: timestamp } })
+        return result;
     } catch (e) {
         console.error(e);
     } finally {
@@ -65,7 +65,7 @@ async function createNewUser() {
         const database = client.db('skmt');
         const userdata = database.collection('userdata');
         pass = await bcrypt.hash(pass, 8);
-        const result = await userdata.insertOne({ number: number, email: email, pass: pass, type_acc: defaultTypeAcc, group_reg: [ group_reg ], active: active });
+        const result = await userdata.insertOne({ number: number, email: email, pass: pass, type_acc: defaultTypeAcc, group_reg: [group_reg], active: active });
         console.log(`New user created with the following id: ${result.insertedId}`);
         return result;
     } catch (e) {
@@ -111,11 +111,26 @@ async function loginUser() {
     }
 }
 
-module.exports = { 
-    createNewUser, 
+async function findEventForHW(group_reg) {
+    try {
+        await client.connect();
+        const database = client.db('skmt');
+        const userdata = database.collection('event');
+        const Findresult = await userdata.find({ group_reg: group_reg }).toArray();
+        console.log(Findresult)
+        return Findresult
+    } catch (e) {
+        console.error(e)
+    } finally {
+        await client.close()
+    }
+}
+module.exports = {
+    createNewUser,
     UserAccInput,
     checkUser,
     loginUser,
     DailyEvent,
-    editTimestamp
+    editTimestamp,
+    findEventForHW,
 };

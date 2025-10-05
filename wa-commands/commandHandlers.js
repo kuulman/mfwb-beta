@@ -1,6 +1,3 @@
-const createUser = require('./basic-commands/createUser.js');
-const getchat = require('./dev-commands/getchat.js');
-
 const commands = {
     info: require('./basic-commands/info.js'),
     server_usage: require('./basic-commands/server_usage.js'),
@@ -12,6 +9,7 @@ const commands = {
     cu: require('./basic-commands/createUser.js'),
     getchat: require('./dev-commands/getchat.js'),
     profile: require('./basic-commands/profile.js'),
+    hw: require('./forsch-commands/addhomework.js')
 };
 
 class CommandHandler {
