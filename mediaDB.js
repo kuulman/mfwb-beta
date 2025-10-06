@@ -4,7 +4,7 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-async function uploadImage(fileName, fileData, expires, fileType) {
+async function uploadImage(fileName, fileData, fileType) {
   // Upload to bucket 'media'
   const { data, error } = await supabase.storage
     .from('media')
@@ -36,7 +36,6 @@ async function uploadImage(fileName, fileData, expires, fileType) {
     .insert({
       name: fileName,
       url: signedUrlData.signedUrl,
-      expires_at: expires,
       uploaded_at: new Date(),
     });
 

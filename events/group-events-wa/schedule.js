@@ -1,10 +1,9 @@
-const { DailyEvent, editTimestamp, checkUser } = require('../../database.js');
+const { DailyEvent, editTimestamp, deleteHWAfterUse } = require('../../database.js');
 
 module.exports = {
     async execute(waClient, MessageMedia, message) {
 
         function getDateBySKMTFormat() {
-            // SKMT Date Format
             const now = new Date();
             const hour = now.getUTCHours().toString().padStart(2, '0');
             const minute = now.getUTCMinutes().toString().padStart(2, '0');
@@ -15,7 +14,6 @@ module.exports = {
         }
 
         function getTommorowDate() {
-            // SKMT Date Format
             const now = new Date();
             now.setUTCDate(now.getUTCDate() + 1);
             const hour = now.getUTCHours().toString().padStart(2, '0');
@@ -27,69 +25,92 @@ module.exports = {
         }
 
         async function CheckEvent() {
-            const SKMTFormatDate = getDateBySKMTFormat()
-            const events = await DailyEvent(SKMTFormatDate);
-            if (!events || events.length === 0) {
+            const SKMTFormatDate = getDateBySKMTFormat();
+            const { result, resultHW } = await DailyEvent(SKMTFormatDate);
+
+            if ((!result || result.length === 0) && (!resultHW || resultHW.length === 0)) {
                 console.log('[Schedule Handler] No scheduled events found.');
-                console.log(SKMTFormatDate)
-                return null;
+                console.log(SKMTFormatDate);
+                return;
             }
-            let readableEvents = events[0]
-            if (readableEvents.type == "Daily Schedule") {
-                const now = new Date()
-                const tommorow = (now.getUTCDay() + 1) % 7; // Get current day (0-6)
-                const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-                const tommorowName = days[tommorow] // Convert number to name (e.g. 1 => "Monday")
 
-                for (const eventData of events) {
-                    try {
-                        let response;
-                        const schedule = eventData.japel?.[tommorowName]
+            const events = [...(result || []), ...(resultHW || [])];
 
+            for (const eventData of events) {
+                try {
+                    const { type, _id: id, group_reg } = eventData;
 
-                        const japelKey = Object.keys(schedule).find(k => k.includes('Japel'))
-                        const japel = schedule[japelKey]
+                    if (type === "Daily Schedule") {
+                        const now = new Date();
+                        const tommorow = (now.getUTCDay() + 1) % 7;
+                        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                        const tommorowName = days[tommorow];
+
+                        const schedule = eventData.japel?.[tommorowName];
+                        if (!schedule) continue;
+
+                        const japelKey = Object.keys(schedule).find(k => k.includes('Japel'));
+                        const japel = japelKey ? schedule[japelKey] : null;
+                        if (!japel || japel.length === 0) continue;
+
                         const header = eventData.header ? eventData.header + '\n\n' : '';
                         const footer = eventData.footer ? '\n\n' + eventData.footer : '';
-                        const id = eventData._id;
+                        const response = `${header} 📅 Schedule for: *${tommorowName}*\n${japel}${footer}`;
 
-                        if (!japel || japel.length === 0) {
-                            return
+                        await waClient.sendMessage(group_reg, response);
+
+                        const tommorowDate = getTommorowDate();
+                        await editTimestamp(id, tommorowDate);
+
+                        console.log(`[Schedule Handler] Daily Schedule ${id} sent to group: ${group_reg}`);
+                    }
+                    else if (type === "Plain Schedule") {
+                        const response = eventData.contents;
+                        await waClient.sendMessage(group_reg, response);
+
+                        const tommorowDate = getTommorowDate();
+                        await editTimestamp(id, tommorowDate);
+
+                        console.log(`[Schedule Handler] Plain Schedule ${id} sent to group: ${group_reg}`);
+                    }
+                    else if (type === "homework") {
+                        const response = eventData.reason;
+                        try {
+                            if (!eventData.url_img || eventData.url_img == null || !eventData.url_img.startsWith('http')) {
+                                // Send text if invalid
+                                await waClient.sendMessage(group_reg, response);
+                            } else {
+                                let media = null;
+                                try {
+                                    media = await MessageMedia.fromUrl(eventData.url_img);
+                                } catch (err) {
+                                    console.log(`[Media Error] Failed to fetch media: ${eventData.url_img}`, err);
+                                }
+
+                                if (media) {
+                                    await waClient.sendMessage(group_reg, media, { caption: response });
+                                } else {
+                                    // Send text if failed
+                                    await waClient.sendMessage(group_reg, response);
+                                }
+                            }
+
+                            await deleteHWAfterUse(id);
+                            console.log(`[Schedule Handler] Homework ${id} sent to group: ${group_reg}`);
+                        } catch (err) {
+                            console.log(`[Schedule Handler] Error sending homework ${id} to ${group_reg}:`, err);
                         }
-
-                        console.log(`📅 Days: ${tommorowName}\n📚 Schedule:\n${japel}`)
-                        response = `${header} 📅 Schedule for: *${tommorowName}*\n${japel}${footer}`
-
-                        await waClient.sendMessage(eventData.group_reg, response);
-
-                        const tommorowDate = getTommorowDate()
-                        await editTimestamp(id, tommorowDate);
-                        console.log(`[Schedule Handler] ${id} schedule sent to group: ${eventData.group_reg}`);
-                    } catch (err) {
-                        console.log(`[Event Handler] Error: ` + err)
-                        return
                     }
-                }
 
-            }
-            if (readableEvents.type == 'Plain Schedule') {
-                for (const eventData of events) {
-                    try {
-                        let response = eventData.contents;
-                        let id = eventData._id;
-                        await waClient.sendMessage(eventData.group_reg, response);
-                        const tommorowDate = getTommorowDate()
-                        await editTimestamp(id, tommorowDate);
-                        console.log(`[Schedule Handler] ${id} schedule sent to group: ${eventData.group_reg}`);
-                    } catch (err) {
-                        console.log(`[Event Handler] Error: ` + err)
-                        return
-                    }
+                } catch (err) {
+                    console.log(`[Event Handler] Error:`, err);
+                    continue;
                 }
             }
         }
-        await CheckEvent()
-        setInterval(async () => { CheckEvent() }, 60000)
+
+        await CheckEvent();
+        setInterval(CheckEvent, 10000);
         console.log('[Schedule Handler] Schedule handler is running...');
     }
 }

@@ -23,7 +23,7 @@ class CommandHandler {
                 await commands[commandName].execute(waClient, message, MessageMedia, args);
             } catch (error) {
                 console.error(`Error executing command ${commandName}:`, error);
-                await message.reply(`❌ .${commandName} does not exist`);
+                return
             }
         } else {
             return

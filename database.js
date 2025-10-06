@@ -20,10 +20,12 @@ async function DailyEvent(timestamp) {
     try {
         await client.connect();
         const database = client.db('skmt');
-        const userdata = database.collection('event');
-        const result = await userdata.find({ time: timestamp }).toArray();
-        console.log('[Database] Event Database Result:', result);
-        return result;
+        const daily = database.collection('event');
+        const hw = database.collection('homework')
+        const result = await daily.find({ time: timestamp }).toArray();
+        const resultHW = await hw.find({ time: timestamp }).toArray();
+        console.log('[Database] Event Database Result:', {result, resultHW});
+        return {result, resultHW};
     } catch (e) {
         console.error(e);
     } finally {
@@ -35,13 +37,59 @@ async function editTimestamp(id, timestamp) {
     try {
         await client.connect();
         const database = client.db('skmt');
-        const userdata = database.collection('event');
-        const result = await userdata.updateMany({ _id: id }, { $set: { time: timestamp } })
+        const editTs = database.collection('event');
+        const result = await editTs.updateMany({ _id: id }, { $set: { time: timestamp } })
         return result;
     } catch (e) {
         console.error(e);
     } finally {
         await client.close();
+    }
+}
+
+async function findEventForHW(group_reg) {
+    try {
+        await client.connect();
+        const database = client.db('skmt');
+        const event = database.collection('event');
+        const Findresult = await event.find({ group_reg: group_reg }).toArray();
+        console.log(Findresult)
+        return Findresult
+    } catch (e) {
+        console.error(e)
+    } finally {
+        await client.close()
+    }
+}
+
+async function createHW(g_id, name, url_img, reason, date, type) {
+    try {
+        await client.connect();
+        const database = client.db('skmt');
+        const hw = database.collection('homework');
+        type = 'homework'
+        const result = await hw.insertOne({ group_reg: g_id, name: name, type: type, url_img: url_img, reason: reason, time: date });
+        console.log(`New homework created for ${name}'s event the following id: ${result.insertedId}`);
+        return result;
+    } catch (e) {
+        console.error(e)
+    } finally {
+        await client.close()
+    }
+}
+
+async function deleteHWAfterUse(id) {
+    try {
+        await client.connect();
+        const database = client.db('skmt');
+        const hw = database.collection('homework');
+        const result = await hw.deleteMany({ _id: id });
+        console.log(`Success deleted ${id} homework`);
+        return result;
+    } catch (e) {
+        console.error(e)
+    } finally {
+        await client.close()
     }
 }
 
@@ -111,20 +159,6 @@ async function loginUser() {
     }
 }
 
-async function findEventForHW(group_reg) {
-    try {
-        await client.connect();
-        const database = client.db('skmt');
-        const userdata = database.collection('event');
-        const Findresult = await userdata.find({ group_reg: group_reg }).toArray();
-        console.log(Findresult)
-        return Findresult
-    } catch (e) {
-        console.error(e)
-    } finally {
-        await client.close()
-    }
-}
 module.exports = {
     createNewUser,
     UserAccInput,
@@ -133,4 +167,6 @@ module.exports = {
     DailyEvent,
     editTimestamp,
     findEventForHW,
+    createHW,
+    deleteHWAfterUse
 };
