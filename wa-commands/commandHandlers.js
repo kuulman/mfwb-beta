@@ -9,7 +9,8 @@ const commands = {
     cu: require('./basic-commands/createUser.js'),
     getchat: require('./dev-commands/getchat.js'),
     profile: require('./basic-commands/profile.js'),
-    hw: require('./forsch-commands/addhomework.js')
+    hw: require('./forsch-commands/addhomework.js'),
+    rks: require('./basic-commands/ringkas.js'),
 };
 
 class CommandHandler {
