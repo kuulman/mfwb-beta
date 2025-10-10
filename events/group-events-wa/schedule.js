@@ -1,4 +1,4 @@
-const { DailyEvent, editTimestamp, deleteHWAfterUse } = require('../../database.js');
+const { DailyEvent, editTimestamp, deleteHWAfterUse } = require('../../api/database.js');
 
 module.exports = {
     async execute(waClient, MessageMedia, message) {

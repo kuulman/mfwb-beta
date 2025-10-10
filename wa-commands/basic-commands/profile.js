@@ -6,7 +6,7 @@ const { get } = require('pm2');
     usage: '.profile',
 
     async execute(waClient, message, MessageMedia, dcClient) {
-        const { UserAccInput, checkUser } = require('../../database');
+    const { UserAccInput, checkUser } = require('../../api/database');
         const chat = message.getChat()
         let Unum = message.from
         let FEnum = '+' + message.from.replace('@c.us', '')

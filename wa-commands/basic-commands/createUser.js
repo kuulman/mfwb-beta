@@ -6,7 +6,7 @@ const { get } = require('pm2');
     usage: '.cu [email] [password]',
 
     async execute(waClient, message, MessageMedia, dcClient) {
-        const { createNewUser, UserAccInput, checkUser } = require('../../database');
+    const { createNewUser, UserAccInput, checkUser } = require('../../api/database');
         const chat = await message.getChat();
         const fulltext = message.body.slice(3).trim();
         const args = fulltext.split(' ');

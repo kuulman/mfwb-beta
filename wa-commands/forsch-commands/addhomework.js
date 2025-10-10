@@ -4,8 +4,8 @@ module.exports = {
     usage: '.hw [date] [rsn]',
 
     async execute(waClient, message, MessageMedia, dcClient) {
-        const { uploadImage } = require('../../mediaDB')
-        const { findEventForHW, createHW } = require('../../database')
+    const { uploadImage } = require('../../api/mediaDB')
+    const { findEventForHW, createHW } = require('../../api/database')
         const chat = await message.getChat();
         const contact = await message.getContact()
         const fulltext = message.body.slice(3).trim();
