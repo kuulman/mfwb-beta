@@ -1,3 +1,5 @@
+const addGroup = require('./basic-commands/addGroup.js');
+
 const commands = {
     info: require('./basic-commands/info.js'),
     server_usage: require('./basic-commands/server_usage.js'),
@@ -10,7 +12,7 @@ const commands = {
     getchat: require('./dev-commands/getchat.js'),
     profile: require('./basic-commands/profile.js'),
     hw: require('./forsch-commands/addhomework.js'),
-    rks: require('./basic-commands/ringkas.js'),
+    addgroup: require('./basic-commands/addGroup.js')
 };
 
 class CommandHandler {

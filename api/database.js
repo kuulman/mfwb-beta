@@ -24,8 +24,8 @@ async function DailyEvent(timestamp) {
         const hw = database.collection('homework')
         const result = await daily.find({ time: timestamp }).toArray();
         const resultHW = await hw.find({ time: timestamp }).toArray();
-        console.log('[Database] Event Database Result:', {result, resultHW});
-        return {result, resultHW};
+        console.log('[Database] Event Database Result:', { result, resultHW });
+        return { result, resultHW };
     } catch (e) {
         console.error(e);
     } finally {
@@ -159,6 +159,35 @@ async function loginUser() {
     }
 }
 
+
+// Group Section
+
+async function regGroup(number, groupID) {
+    try {
+        await client.connect();
+        const database = client.db('skmt');
+        const userdata = database.collection('userdata');
+        const Findresult = await userdata.findOne({ number: number });
+        if (!Findresult || Findresult.length == 0) {
+            return false
+        } else {
+            await userdata.updateOne(
+                { _id: Findresult._id },
+                {
+                    $push: {
+                        group_reg: { id: groupID, settings: [] }
+                    }
+                }
+            );
+            return console.log(`Success added group in ${Findresult._id} database`)
+        }
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
 module.exports = {
     createNewUser,
     UserAccInput,
@@ -168,5 +197,6 @@ module.exports = {
     editTimestamp,
     findEventForHW,
     createHW,
-    deleteHWAfterUse
+    deleteHWAfterUse,
+    regGroup
 };
