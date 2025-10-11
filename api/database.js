@@ -168,8 +168,11 @@ async function regGroup(number, groupID) {
         const database = client.db('skmt');
         const userdata = database.collection('userdata');
         const Findresult = await userdata.findOne({ number: number });
-        if (!Findresult || Findresult.length == 0) {
+        const FindGroupresult = await userdata.findOne({ "group_reg.id": groupID });
+        if ((!Findresult || Findresult.length == 0)) {
             return false
+        } if (FindGroupresult) {
+            return `${groupID} currently on DB`
         } else {
             await userdata.updateOne(
                 { _id: Findresult._id },
@@ -198,5 +201,5 @@ module.exports = {
     findEventForHW,
     createHW,
     deleteHWAfterUse,
-    regGroup
+    regGroup,
 };

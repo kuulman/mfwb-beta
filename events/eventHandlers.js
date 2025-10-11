@@ -2,6 +2,7 @@ const index = require('../index.js')
 const events = {
   // gagapi: require('./basic-events-wa/gag_notif.js'),
   schedule: require('./group-events-wa/schedule.js'),
+  join_leave: require('./group-events-wa/join_leave.js'),
 };
 
 

@@ -16,7 +16,8 @@ const { get } = require('pm2');
         }
 
         const data = await regGroup(contact.id._serialized, chat.id._serialized)
-        if (data == false) { await message.reply("You need to create account before using this feature")}
+        if (data == false) { await message.reply("You need to create account before using this feature"); return }
+        if (data == `${chat.id._serialized} currently on DB`) { await message.reply(`This group has been registered`); return }
         await message.reply(`Registered this group to ${('+' + contact.number)} / ${contact.pushname}'s account`)
         return
     },
