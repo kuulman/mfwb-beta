@@ -1,6 +1,7 @@
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const join_leave = require('../events/group-events-wa/join_leave');
 const uri = process.env.DB_URI;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -24,7 +25,6 @@ async function DailyEvent(timestamp) {
         const hw = database.collection('homework')
         const result = await daily.find({ time: timestamp }).toArray();
         const resultHW = await hw.find({ time: timestamp }).toArray();
-        console.log('[Database] Event Database Result:', { result, resultHW });
         return { result, resultHW };
     } catch (e) {
         console.error(e);
@@ -85,6 +85,21 @@ async function deleteHWAfterUse(id) {
         const hw = database.collection('homework');
         const result = await hw.deleteMany({ _id: id });
         console.log(`Success deleted ${id} homework`);
+        return result;
+    } catch (e) {
+        console.error(e)
+    } finally {
+        await client.close()
+    }
+}
+
+async function getUserJoinLeaveData(id) {
+    try {
+        await client.connect();
+        const database = client.db('skmt');
+        const event = database.collection('userdata');
+        const result = await event.findOne({ "group_reg.id": id }, { projection: {"group_reg": 1, _id: 0 }})
+        console.debug(result)
         return result;
     } catch (e) {
         console.error(e)
@@ -178,7 +193,7 @@ async function regGroup(number, groupID) {
                 { _id: Findresult._id },
                 {
                     $push: {
-                        group_reg: { id: groupID, settings: [] }
+                        group_reg: { id: groupID, settings: { join_leave: false } }
                     }
                 }
             );
@@ -202,4 +217,5 @@ module.exports = {
     createHW,
     deleteHWAfterUse,
     regGroup,
+    getUserJoinLeaveData
 };
