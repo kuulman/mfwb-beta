@@ -105,7 +105,7 @@ async function getUserJoinLeaveData(id, type) {
             const groupData = result.group_reg.find(
                 (g) => g.id === id
             );
-
+            if (groupData?.settings?.join_leave?.active === false) { return null }
             const joinMessage = groupData?.settings?.join_leave?.join_message;
             console.debug(joinMessage)
             return joinMessage;
@@ -121,9 +121,9 @@ async function getUserJoinLeaveData(id, type) {
                 (g) => g.id === id
             );
 
-            const joinMessage = groupData?.settings?.join_leave?.join_message;
-            console.debug(joinMessage)
-            return joinMessage;
+            const leaveMessage = groupData?.settings?.join_leave?.leave_message;
+            console.debug(leaveMessage)
+            return leaveMessage;
         } else {
             console.error('Error: Type isnt defined')
         }

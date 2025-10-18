@@ -34,6 +34,7 @@ module.exports = {
         });
 
         waClient.on('group_leave', async (notification) => {
+            const { getUserJoinLeaveData } = require("../../api/database")
             const chat = await notification.getChat();
             const jids = notification.recipientIds;
             const mentions = [];
@@ -44,13 +45,20 @@ module.exports = {
                 mentionTexts.push(`@${userId}`);
                 mentions.push(jid);
             }
+            const Plaintext = await getUserJoinLeaveData(chat.id._serialized, 'leave');
 
-            const text = `👋 Goodbye ${mentionTexts.join(', ')}`;
+            if (!Plaintext) {
+                console.debug(Plaintext)
+                return;
+            }
 
-            await chat.sendMessage(text, {
-                mentions
-            });
-            return
+            const text = Plaintext
+            .replace(/{user}/g, mentionTexts.join(', '))
+            .replace(/{group}/g, chat.name);
+            
+            console.debug('ok')
+            await chat.sendMessage(text, { mentions });
+            return;
         })
     }
 };
