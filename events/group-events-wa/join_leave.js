@@ -3,7 +3,7 @@ module.exports = {
         console.log('[join_leave.js] is running')
 
         waClient.on('group_join', async (notification) => {
-            const { getUserJoinLeaveData } = require("../../api/database").default
+            const { getUserJoinLeaveData } = require("../../api/database")
             const chat = await notification.getChat();
             const jids = notification.recipientIds;
             const mentions = [];
@@ -16,26 +16,19 @@ module.exports = {
             }
 
             console.debug('info')
-
-            const Plaintext = await getUserJoinLeaveData(chat.id._serialized);
+            console.debug(chat.id._serialized)
+            const Plaintext = await getUserJoinLeaveData(chat.id._serialized, 'join');
 
             if (!Plaintext) {
-                console.debug("e")
+                console.debug(Plaintext)
                 return;
             }
 
-            const groupData = Plaintext.group_reg.find(
-                (g) => g.id === chat.id._serialized
-            );
+            const text = Plaintext
+            .replace(/{user}/g, mentionTexts.join(', '))
+            .replace(/{group}/g, chat.name);
             
-            const joinMessage = groupData?.settings?.join_leave?.join_message;
-            console.debug(joinMessage)
-
-
-            const text = joinMessage
-                .replace(/{user}/g, mentionTexts.join(', '))
-                .replace(/{group}/g, chat.name);
-
+            console.debug('ok')
             await chat.sendMessage(text, { mentions });
             return
         });

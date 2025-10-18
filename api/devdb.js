@@ -1,5 +1,6 @@
 // DEVELOPMENT ONLY, NOT FOR PRODUCTION
 // ANY DEBUGGING OR NEW FEATURES NEED TO BE TESTED HERE
+// FOR DEBUGGING ONLY, CHANGES `package.json` type to module
 
 import dotenv from 'dotenv'
 import bcrypt from 'bcryptjs'

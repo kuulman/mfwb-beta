@@ -93,14 +93,40 @@ async function deleteHWAfterUse(id) {
     }
 }
 
-async function getUserJoinLeaveData(id) {
+async function getUserJoinLeaveData(id, type) {
     try {
-        await client.connect();
-        const database = client.db('skmt');
-        const event = database.collection('userdata');
-        const result = await event.findOne({ "group_reg.id": id }, { projection: {"group_reg": 1, _id: 0 }})
-        console.debug(result)
-        return result;
+        if (type === 'join') {
+            await client.connect();
+            const database = client.db('skmt');
+            const event = database.collection('userdata');
+            const result = await event.findOne({ "group_reg.id": id }, { projection: { "group_reg": 1, _id: 0 } })
+            if (!result) { return null }
+            console.debug(result.group_reg.settings)
+            const groupData = result.group_reg.find(
+                (g) => g.id === id
+            );
+
+            const joinMessage = groupData?.settings?.join_leave?.join_message;
+            console.debug(joinMessage)
+            return joinMessage;
+        }
+        if (type === 'leave') {
+            await client.connect();
+            const database = client.db('skmt');
+            const event = database.collection('userdata');
+            const result = await event.findOne({ "group_reg.id": id }, { projection: { "group_reg": 1, _id: 0 } })
+            if (!result) { return null }
+            console.debug(result.group_reg.settings)
+            const groupData = result.group_reg.find(
+                (g) => g.id === id
+            );
+
+            const joinMessage = groupData?.settings?.join_leave?.join_message;
+            console.debug(joinMessage)
+            return joinMessage;
+        } else {
+            console.error('Error: Type isnt defined')
+        }
     } catch (e) {
         console.error(e)
     } finally {
